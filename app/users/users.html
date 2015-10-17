@@ -1,0 +1,68 @@
+<ol class="breadcrumb">
+    <li><a href="#/admin">Admin</a></li>
+    <li class="active">Users</li>
+</ol>
+
+<div class="btn-toolbar">
+    <button type="button" class="btn btn-default" ng-click="openAddUserModal()">Add User</button>
+</div>
+
+<table class="table table-condensed table-striped">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Enabled</th>
+        <th>Role</th>
+        <th>Last Login</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-if="readyState && users.length == 0">
+        <td colspan="6" class="text-center">
+            There are no users
+        </td>
+    </tr>
+    <tr ng-repeat="user in users track by _id | filter: { deleted: false } | orderBy: 'lastLogin'">
+        <td></td>
+        <td>{{user.name}}</td>
+        <td>{{user.username}}</td>
+        <td>{{user.enabled</td>
+        <td>{{user.admin}}</td>
+        <td>{{user.lastLogin}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<script type="text/ng-template" id="addUserModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add User</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="form-group" ng-class="{ 'has-error': !formValid(user.name) }">
+                <label class="control-label col-md-2">Name</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control input-sm" ng-model="user.name" placeholder="The user's name / nickname">
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': !formValid(user.username) }">
+                <label class="control-label col-md-2">Username</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control input-sm" ng-model="user.username" placeholder="The user's username">
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': !formValid(user.password) }">
+                <label class="control-label col-md-2">Password</label>
+                <div class="col-md-10">
+                    <input type="password" class="form-control input-sm" ng-model="user.password">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Add User</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

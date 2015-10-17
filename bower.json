@@ -10,9 +10,10 @@
     "angular-route": "1.4.x",
     "angular-loader": "1.4.x",
     "angular-mocks": "~1.4.x",
-    "html5-boilerplate": "~4.3.0",
+    "angular-bootstrap": "~0.14.2",
     "requirejs-text": "2.0.x",
     "requirejs": "2.1.x",
-    "angular-websocket": "~1.0.13"
+    "angular-websocket": "~1.0.13",
+    "bootstrap": "~3.3.5"
   }
 }
