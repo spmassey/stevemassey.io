@@ -20,6 +20,28 @@ define(['angular'], function (angular) {
                     );
                     return this.deferred.promise;
                 },
+                add: function (data) {
+                    this.deferred = $q.defer();
+                    dataStream.send(
+                        JSON.stringify({
+                            path: '/user',
+                            action: 'add',
+                            data: data
+                        })
+                    );
+                    return this.deferred.promise;
+                },
+                remove: function (data) {
+                    this.deferred = $q.defer();
+                    dataStream.send(
+                        JSON.stringify({
+                            path: '/user',
+                            action: 'delete',
+                            id: data._id
+                        })
+                    );
+                    return this.deferred.promise;
+                },
                 reset: function () {
                     this.users = [];
                 }
@@ -27,7 +49,8 @@ define(['angular'], function (angular) {
 
             dataStream.onMessage(function (message) {
                 var response = JSON.parse(message.data),
-                    path = response.path || '';
+                    path = response.path || '',
+                    action = response.action || '';
                 switch (path) {
                     case '/users':
                         users.reset();
@@ -36,6 +59,10 @@ define(['angular'], function (angular) {
                         }
                         users.deferred
                             .resolve(users.users);
+                        break;
+                    case '/user':
+                        users.deferred
+                            .resolve(response.result);
                         break;
                 }
             });

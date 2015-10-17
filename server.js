@@ -105,10 +105,57 @@ wss.on('connection', function connection(ws) {
                             } else {
                                 ws.send(JSON.stringify({
                                     path: path,
+                                    action: action,
                                     result: result
                                 }));
                             }
                         });
+                }
+                break;
+            case 'user':
+                if ('add' == action) {
+                    var User = mongoose.model('Users', schemas.User),
+                        user = new User(payload.data);
+                    user.save(function (err) {
+                        if (err) {
+                            console.log('Error saving user:', err);
+                            ws.send(JSON.stringify({
+                                path: path,
+                                action: action,
+                                result: {
+                                    error: err
+                                }
+                            }));
+                        } else {
+                            console.log('Successfully added new user', user._id);
+                            ws.send(JSON.stringify({
+                                path: path,
+                                action: action,
+                                result: user
+                            }));
+                        }
+                    });
+                } else if ('delete' == action) {
+                    var Users = mongoose.model('Users', schemas.User);
+                    Users.remove({ _id: payload.id }, function (err) {
+                        if (err) {
+                            console.log('Error removing user:', err);
+                            ws.send(JSON.stringify({
+                                path: path,
+                                action: action,
+                                result: {
+                                    error: err
+                                }
+                            }));
+                        } else {
+                            console.log('Successfully deleted user', payload.id);
+                            ws.send(JSON.stringify({
+                                path: path,
+                                action: action,
+                                result: payload.id
+                            }));
+                        }
+                    });
                 }
                 break;
             default:
