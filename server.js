@@ -42,6 +42,10 @@ mongoose.connect(dsn + db, function (err, res) {
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
+router.get('/', function (req, res) {
+    res.sendfile(path.join(__dirname + "/app/index.html"));
+});
+
 router.get('/users', function (req, res) {
     UsersApi.get()
         .then(function (users) {
@@ -51,49 +55,42 @@ router.get('/users', function (req, res) {
         });
 });
 
-app.use(router);
-
-// more routes for our API will happen here
-
-// REGISTER OUR ROUTES -------------------------------
-app.get('/', function (req, res) {
-    res.sendfile(path.join(__dirname + "/app/index.html"));
+router.post('/user', function (req, res) {
+    var payload = req.body;
+    UserApi.add(payload)
+        .then(function (newId) {
+            res.send({
+                uid: newId
+            });
+        }, function (err) {
+            // TODO: write me
+        });
 });
 
-//app.get('/projects', function (req, res) {
-//    var Project = mongoose.model('Projects', schemas.Project);
-//    Project.find({})
-//        .exec(function (err, result) {
-//            if (err) {
-//                console.log('Error fetching projects:', err);
-//            } else {
-//                res.send(JSON.stringify(result, undefined, 2));
-//            }
-//        });
-//});
-//
-//app.get('/add-project', function (req, res) {
-//
-//    var Project = mongoose.model('Projects', schemas.Project);
-//
-//    var project = new Project({
-//        name: 'Test',
-//        description: 'This is a test description',
-//        role: 'Author',
-//        began: new Date('2012-01-01')
-//    });
-//
-//    project.save(function (err) {
-//        if (err) {
-//            console.log('error saving:', err);
-//        } else {
-//            console.log('success adding project', project._id);
-//        }
-//    });
-//
-//    res.send('Ok: ' + project._id);
-//});
+router.put('/user/:id', function (req, res) {
+    var payload = req.body;
+    UserApi.save(req.params.id, payload)
+        .then(function () {
+            res.send({
+                uid: req.params.id
+            });
+        }, function (err) {
+            // TODO: write me
+        });
+});
 
+router.delete('/user/:id', function (req, res) {
+    UserApi.remove(req.params.id)
+        .then(function () {
+            res.send({
+                uid: req.params.id
+            });
+        }, function (err) {
+            // TODO: write me
+        });
+});
+
+app.use(router);
 
 
 wss.on('connection', function connection(ws) {
@@ -141,6 +138,18 @@ wss.on('connection', function connection(ws) {
                                     path: path,
                                     action: action,
                                     result: payload.id
+                                }));
+                            }, function (err) {
+                                // TODO: write me
+                            });
+                        break;
+                    case('update'):
+                        UserApi.save(payload.data.id, payload.data)
+                            .then(function () {
+                                ws.send(JSON.stringify({
+                                    path: path,
+                                    action: action,
+                                    result: { uid: payload.id }
                                 }));
                             }, function (err) {
                                 // TODO: write me

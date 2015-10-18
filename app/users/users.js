@@ -47,24 +47,67 @@ define([
 
             $scope.addUser = function (data) {
                 var df = $q.defer();
-                DataService.users
-                    .add(data)
-                    .then(function () {
-                        df.resolve();
-                    });
+                if ('http' == $scope.vehicle) {
+                    $http.post('/user', data)
+                        .success(function () {
+                            df.resolve();
+                        });
+                } else {
+                    DataService.users
+                        .add(data)
+                        .then(function () {
+                            df.resolve();
+                        });
+                }
+                return df.promise;
+            };
+
+            $scope.saveUser = function (data) {
+                var df = $q.defer();
+                if ('http' == $scope.vehicle) {
+                    $http.put('/user/' + data.id, data)
+                        .success(function () {
+                            df.resolve();
+                        });
+                } else {
+                    DataService.users
+                        .save(data)
+                        .then(function () {
+                            df.resolve();
+                        });
+                }
                 return df.promise;
             };
 
             $scope.openAddUserModal = function () {
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'addUserModal.html',
-                    controller: 'AddUserModalCtrl',
+                    templateUrl: 'userModal.html',
+                    controller: 'UserModalCtrl',
                     size: 'md'
                 });
 
                 modalInstance.result.then(function (formData) {
                     $scope.addUser(formData)
+                        .then($scope.loadUsers);
+                });
+            };
+
+            $scope.openEditUserModal = function (user) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'userModal.html',
+                    controller: 'UserModalCtrl',
+                    size: 'md',
+                    resolve: {
+                        user: function () {
+                            return user;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (formData) {
+                    $scope.saveUser(formData)
                         .then($scope.loadUsers);
                 });
             };
@@ -78,11 +121,18 @@ define([
 
             $scope.deleteUser = function (user) {
                 var df = $q.defer();
-                DataService.users
-                    .remove(user)
-                    .then(function () {
-                        df.resolve();
-                    });
+                if ('http' == $scope.vehicle) {
+                    $http.delete('/user/' + user._id)
+                        .success(function () {
+                            df.resolve();
+                        });
+                } else {
+                    DataService.users
+                        .remove(user)
+                        .then(function () {
+                            df.resolve();
+                        });
+                }
                 return df.promise;
             };
 
@@ -93,12 +143,13 @@ define([
         }
     ];
 
-    var AddUserModalCtrl = [
-        '$scope', '$modalInstance',
-        function ($scope, $modalInstance) {
+    var UserModalCtrl = [
+        '$scope', '$modalInstance', 'user',
+        function ($scope, $modalInstance, user) {
             $scope.processing = false;
 
             $scope.user = {
+                id: null,
                 name: {
                     value: '',
                     valid: null,
@@ -118,9 +169,19 @@ define([
                     value: '',
                     valid: null,
                     message: ''
-                }
+                },
+                enabled: true,
+                admin: false
             };
 
+            if (user) {
+                $scope.user.id = user._id;
+                $scope.user.name.value = user.name;
+                $scope.user.email.value = user.email;
+                $scope.user.username.value = user.username;
+                $scope.user.enabled = user.enabled;
+                $scope.user.admin = user.admin;
+            }
 
             $scope.$watch('user.name.value', function () { $scope.user.name.valid = null; });
             $scope.$watch('user.email.value', function () { $scope.user.email.valid = null; });
@@ -145,11 +206,13 @@ define([
                     $scope.user.username.message = 'Please enter a username';
                     $scope.user.username.valid = valid;
                 }
-                if (0 == $scope.user.password.value.length) {
-                    valid = false;
-                    $scope.user.password.message = 'Please enter a password';
-                    $scope.user.password.valid = valid;
-                } else if (null === $scope.user.password.value.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{6,}$/)) {
+                if (null === $scope.user.id &&
+                    (
+                        0 == $scope.user.password.value.length
+                            ||
+                        null === $scope.user.password.value.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{6,}$/)
+                    )
+                ) {
                     valid = false;
                     $scope.user.password.message = 'The password must be at least 6 characters long, with at least 1 letter, number, and special character';
                     $scope.user.password.valid = valid;
@@ -158,10 +221,13 @@ define([
                 if (valid) {
                     $scope.processing = true;
                     $modalInstance.close({
+                        id: $scope.user.id,
                         name: $scope.user.name.value,
                         email: $scope.user.email.value,
                         username: $scope.user.username.value,
-                        password: $scope.user.password.value
+                        password: $scope.user.password.value,
+                        enabled: $scope.user.enabled,
+                        admin: $scope.user.admin
                     });
                 }
             };
@@ -181,6 +247,6 @@ define([
             });
         }])
         .controller('UsersCtrl', UsersCtrl)
-        .controller('AddUserModalCtrl', AddUserModalCtrl)
+        .controller('UserModalCtrl', UserModalCtrl)
 });
 

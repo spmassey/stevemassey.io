@@ -20,14 +20,14 @@
         </div>
 
         <div class="btn-toolbar">
-            <button type="button" class="btn btn-default" ng-click="openAddUserModal()">Add User</button>
+            <button type="button" class="btn btn-primary" ng-click="openAddUserModal()">Add User</button>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <table class="table table-condensed table-striped">
+        <table class="table table-condensed table-striped table-responsive">
             <thead>
             <tr>
                 <th></th>
@@ -52,6 +52,7 @@
                 <td>
                     <div class="btn-toolbar">
                         <button type="button" class="btn btn-danger" ng-click="confirmDeleteUser(user)" title="Remove User"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="openEditUserModal(user)" title="Edit User"><i class="fa fa-pencil"></i></button>
                     </div>
                 </td>
                 <td>{{user.name}}</td>
@@ -69,49 +70,86 @@
 <div class="row">
     <div class="col-md-12">
         <div ng-if="responseTimes.loadUsers !== null">
-            <small>Results in <strong>{{responseTimes.loadUsers}}</strong> seconds</small>
+            <small>Results in <strong>{{responseTimes.loadUsers}}</strong> seconds ({{vehicle}})</small>
         </div>
     </div>
 </div>
 
-<script type="text/ng-template" id="addUserModal.html">
+<script type="text/ng-template" id="userModal.html">
     <div class="modal-header">
-        <h3 class="modal-title">Add User</h3>
+        <h3 class="modal-title" ng-init="bAdd = (user.id === null)">
+            <span ng-if="bAdd">Add</span>
+            <span ng-if="!bAdd">Edit</span>
+            User
+        </h3>
     </div>
     <div class="modal-body">
         <form class="form-horizontal">
             <div class="form-group" ng-class="{ 'has-error': user.name.valid === false }">
                 <label class="control-label col-md-2">Name</label>
                 <div class="col-md-10">
-                    <input type="text" class="form-control input-sm" ng-model="user.name.value" placeholder="The user's name / nickname">
+                    <input type="text" class="form-control input-sm"
+                           ng-model="user.name.value"
+                           ng-keyup="$event.keyCode == 13 && ok()"
+                           placeholder="The user's name / nickname">
                     <p ng-if="user.name.valid === false" class="text-danger"><small>{{user.name.message}}</small></p>
                 </div>
             </div>
             <div class="form-group" ng-class="{ 'has-error': user.email.valid === false }">
                 <label class="control-label col-md-2">Email</label>
                 <div class="col-md-10">
-                    <input type="text" class="form-control input-sm" ng-model="user.email.value" placeholder="The user's email address">
+                    <input type="text" class="form-control input-sm"
+                           ng-model="user.email.value"
+                           ng-keyup="$event.keyCode == 13 && ok()"
+                           placeholder="The user's email address">
                     <p ng-if="user.email.valid === false" class="text-danger"><small>{{user.email.message}}</small></p>
                 </div>
             </div>
             <div class="form-group" ng-class="{ 'has-error': user.username.valid === false }">
                 <label class="control-label col-md-2">Username</label>
                 <div class="col-md-10">
-                    <input type="text" class="form-control input-sm" ng-model="user.username.value" placeholder="The user's username">
+                    <input type="text" class="form-control input-sm"
+                           ng-model="user.username.value"
+                           ng-keyup="$event.keyCode == 13 && ok()"
+                           placeholder="The user's username">
                     <p ng-if="user.username.valid === false" class="text-danger"><small>{{user.username.message}}</small></p>
                 </div>
             </div>
             <div class="form-group" ng-class="{ 'has-error': user.password.valid === false }">
                 <label class="control-label col-md-2">Password</label>
                 <div class="col-md-10">
-                    <input type="password" class="form-control input-sm" ng-model="user.password.value">
+                    <input type="password" class="form-control input-sm"
+                           ng-model="user.password.value"
+                           ng-keyup="$event.keyCode == 13 && ok()">
                     <p ng-if="user.password.valid === false" class="text-danger"><small>{{user.password.message}}</small></p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="user.enabled"> Account Enabled
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="user.admin"> Admin
+                        </label>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="processing">Add User</button>
+        <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="processing">
+            <span ng-if="bAdd">Add</span>
+            <span ng-if="!bAdd">Save</span>
+            User
+        </button>
         <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
     </div>
 </script>

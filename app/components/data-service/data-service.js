@@ -42,6 +42,17 @@ define(['angular'], function (angular) {
                     );
                     return this.deferred.promise;
                 },
+                save: function (data) {
+                    this.deferred = $q.defer();
+                    dataStream.send(
+                        JSON.stringify({
+                            path: '/user',
+                            action: 'update',
+                            data: data
+                        })
+                    );
+                    return this.deferred.promise;
+                },
                 reset: function () {
                     this.users = [];
                 }
