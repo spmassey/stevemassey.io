@@ -13,7 +13,10 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var url = require('url');
 var mongoose = require('mongoose');
-var schemas = require('./schemas');
+var Q = require('q');
+var models = require('./models')(mongoose);
+var UsersApi = require('./api/users')(models.User);
+var UserApi = require('./api/user')(models.User);
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -39,53 +42,59 @@ mongoose.connect(dsn + db, function (err, res) {
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/)
-router.get('/', function (req, res) {
-    res.json({message: "Welcome to the API"});
+router.get('/users', function (req, res) {
+    UsersApi.get()
+        .then(function (users) {
+            res.send(users);
+        }, function (err) {
+            // TODO: write me
+        });
 });
+
+app.use(router);
 
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------
-app.use('/api', router);
-
 app.get('/', function (req, res) {
     res.sendfile(path.join(__dirname + "/app/index.html"));
 });
 
-app.get('/projects', function (req, res) {
-    var Project = mongoose.model('Projects', schemas.Project);
-    Project.find({})
-        .exec(function (err, result) {
-            if (err) {
-                console.log('Error fetching projects:', err);
-            } else {
-                res.send(JSON.stringify(result, undefined, 2));
-            }
-        });
-});
+//app.get('/projects', function (req, res) {
+//    var Project = mongoose.model('Projects', schemas.Project);
+//    Project.find({})
+//        .exec(function (err, result) {
+//            if (err) {
+//                console.log('Error fetching projects:', err);
+//            } else {
+//                res.send(JSON.stringify(result, undefined, 2));
+//            }
+//        });
+//});
+//
+//app.get('/add-project', function (req, res) {
+//
+//    var Project = mongoose.model('Projects', schemas.Project);
+//
+//    var project = new Project({
+//        name: 'Test',
+//        description: 'This is a test description',
+//        role: 'Author',
+//        began: new Date('2012-01-01')
+//    });
+//
+//    project.save(function (err) {
+//        if (err) {
+//            console.log('error saving:', err);
+//        } else {
+//            console.log('success adding project', project._id);
+//        }
+//    });
+//
+//    res.send('Ok: ' + project._id);
+//});
 
-app.get('/add-project', function (req, res) {
 
-    var Project = mongoose.model('Projects', schemas.Project);
-
-    var project = new Project({
-        name: 'Test',
-        description: 'This is a test description',
-        role: 'Author',
-        began: new Date('2012-01-01')
-    });
-
-    project.save(function (err) {
-        if (err) {
-            console.log('error saving:', err);
-        } else {
-            console.log('success adding project', project._id);
-        }
-    });
-
-    res.send('Ok: ' + project._id);
-});
 
 wss.on('connection', function connection(ws) {
     //var location = url.parse(ws.upgradeReq.url, true);
@@ -94,68 +103,51 @@ wss.on('connection', function connection(ws) {
         var payload = JSON.parse(message);
         var path = payload.path || '',
             action = payload.action || '';
-        switch (path.replace(/^\/+/,'').replace(/\/+$/,'')) {
-            case 'users':
-                if ('' == action) {
-                    var Users = mongoose.model('Users', schemas.User);
-                    Users.find()
-                        .exec(function (err, result) {
-                            if (err) {
-                                console.log('Error fetching users:', err);
-                            } else {
+        switch (path.replace(/^\/+/, '').replace(/\/+$/, '')) {
+            case('users'):
+                switch (action) {
+                    // GET all users
+                    default:
+                        UsersApi.get()
+                            .then(function (users) {
                                 ws.send(JSON.stringify({
                                     path: path,
                                     action: action,
-                                    result: result
+                                    result: users
                                 }));
-                            }
-                        });
+                            }, function (err) {
+                                // TODO: write me
+                            });
                 }
                 break;
-            case 'user':
-                if ('add' == action) {
-                    var User = mongoose.model('Users', schemas.User),
-                        user = new User(payload.data);
-                    user.save(function (err) {
-                        if (err) {
-                            console.log('Error saving user:', err);
-                            ws.send(JSON.stringify({
-                                path: path,
-                                action: action,
-                                result: {
-                                    error: err
-                                }
-                            }));
-                        } else {
-                            console.log('Successfully added new user', user._id);
-                            ws.send(JSON.stringify({
-                                path: path,
-                                action: action,
-                                result: user
-                            }));
-                        }
-                    });
-                } else if ('delete' == action) {
-                    var Users = mongoose.model('Users', schemas.User);
-                    Users.remove({ _id: payload.id }, function (err) {
-                        if (err) {
-                            console.log('Error removing user:', err);
-                            ws.send(JSON.stringify({
-                                path: path,
-                                action: action,
-                                result: {
-                                    error: err
-                                }
-                            }));
-                        } else {
-                            console.log('Successfully deleted user', payload.id);
-                            ws.send(JSON.stringify({
-                                path: path,
-                                action: action,
-                                result: payload.id
-                            }));
-                        }
-                    });
+            case('user'):
+                switch (action) {
+                    case('add'):
+                        UserApi.add(payload.data)
+                            .then(function (newId) {
+                                ws.send(JSON.stringify({
+                                    path: path,
+                                    action: action,
+                                    result: newId
+                                }));
+                            }, function (err) {
+                                // TODO: write me
+                            });
+                        break;
+                    case('remove'):
+                        UserApi.remove(payload.id)
+                            .then(function () {
+                                ws.send(JSON.stringify({
+                                    path: path,
+                                    action: action,
+                                    result: payload.id
+                                }));
+                            }, function (err) {
+                                // TODO: write me
+                            });
+                        break;
+                    default:
+                    // TODO: write me
                 }
                 break;
             default:

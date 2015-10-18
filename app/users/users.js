@@ -5,21 +5,44 @@ define([
 ], function (angular) {
 
     var UsersCtrl = [
-        '$scope', '$q', '$uibModal', 'DataService',
-        function ($scope, $q, $uibModal, DataService) {
+        '$scope', '$q', '$http', '$uibModal', 'DataService',
+        function ($scope, $q, $http, $uibModal, DataService) {
             $scope.readyState = false;
+            $scope.vehicle = 'http';
             $scope.users = [];
+            $scope.responseTimes = {
+                loadUsers: null
+            };
+
+            $scope.toggleVehicle = function () {
+                $scope.vehicle = ($scope.vehicle == 'http' ? 'ws' : 'http');
+            };
 
             $scope.loadUsers = function () {
                 console.log('loading users');
+                var start = performance.now(),
+                    end;
                 $scope.readyState = false;
-                DataService.users
-                    .get()
-                    .then(function (users) {
-                        console.log('loaded users', users);
-                        $scope.users = users;
-                        $scope.readyState = true;
-                    });
+                if ('http' == $scope.vehicle) {
+                    $http.get('/users')
+                        .success(function (users) {
+                            console.log('loaded users', users);
+                            $scope.users = users;
+                            $scope.readyState = true;
+                            end = performance.now();
+                            $scope.responseTimes.loadUsers = ((end - start) / 1000).toFixed(4);
+                        });
+                } else {
+                    DataService.users
+                        .get()
+                        .then(function (users) {
+                            console.log('loaded users', users);
+                            $scope.users = users;
+                            $scope.readyState = true;
+                            end = performance.now();
+                            $scope.responseTimes.loadUsers = ((end - start) / 1000).toFixed(4);
+                        });
+                }
             };
 
             $scope.addUser = function (data) {
@@ -63,7 +86,10 @@ define([
                 return df.promise;
             };
 
-            $scope.loadUsers();
+            $scope.$watch('vehicle', function (newVal, oldVal) {
+                console.log('loading with vehicle', $scope.vehicle);
+                $scope.loadUsers();
+            });
         }
     ];
 
@@ -74,6 +100,11 @@ define([
 
             $scope.user = {
                 name: {
+                    value: '',
+                    valid: null,
+                    message: ''
+                },
+                email: {
                     value: '',
                     valid: null,
                     message: ''
@@ -92,6 +123,7 @@ define([
 
 
             $scope.$watch('user.name.value', function () { $scope.user.name.valid = null; });
+            $scope.$watch('user.email.value', function () { $scope.user.email.valid = null; });
             $scope.$watch('user.username.value', function () { $scope.user.username.valid = null; });
             $scope.$watch('user.password.value', function () { $scope.user.password.valid = null; });
 
@@ -102,6 +134,11 @@ define([
                     valid = false;
                     $scope.user.name.message = 'Please enter a name';
                     $scope.user.name.valid = valid;
+                }
+                if (0 == $scope.user.email.value.length || null === $scope.user.email.value.match(/@/)) {
+                    valid = false;
+                    $scope.user.email.message = 'Please enter a valid email address';
+                    $scope.user.email.valid = valid;
                 }
                 if (0 == $scope.user.username.value.length) {
                     valid = false;
@@ -122,6 +159,7 @@ define([
                     $scope.processing = true;
                     $modalInstance.close({
                         name: $scope.user.name.value,
+                        email: $scope.user.email.value,
                         username: $scope.user.username.value,
                         password: $scope.user.password.value
                     });

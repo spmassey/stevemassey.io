@@ -34,6 +34,8 @@
     "protractor": "protractor e2e-tests/protractor.conf.js"
   },
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "q": "^1.4.1",
     "ws": "^0.8.0"
   }
 }

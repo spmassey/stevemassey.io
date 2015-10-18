@@ -1,46 +1,78 @@
-<ol class="breadcrumb">
-    <li><a href="#/admin">Admin</a></li>
-    <li class="active">Users</li>
-</ol>
 
-<div class="btn-toolbar">
-    <button type="button" class="btn btn-default" ng-click="openAddUserModal()">Add User</button>
+
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="#/admin">Admin</a></li>
+            <li class="active">Users</li>
+        </ol>
+    </div>
 </div>
 
-<table class="table table-condensed table-striped">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Username</th>
-        <th>Enabled</th>
-        <th>Role</th>
-        <th>Last Login</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-if="!readyState">
-        <td colspan="6" class="text-center"><i class="fa fa-spinner fa-pulse"></i></td>
-    </tr>
-    <tr ng-if="readyState && users.length == 0">
-        <td colspan="6" class="text-center">
-            There are no users
-        </td>
-    </tr>
-    <tr ng-repeat="user in users | orderBy: 'lastLogin'">
-        <td>
-            <div class="btn-toolbar">
-                <button type="button" class="btn btn-danger" ng-click="confirmDeleteUser(user)" title="Remove User"><i class="fa fa-trash"></i></button>
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-right">
+            <div style="cursor: pointer;"
+                    ng-click="toggleVehicle()">
+                <i class="fa fa-2x" ng-class="{ 'fa-toggle-off': vehicle == 'http', 'fa-toggle-on': vehicle == 'ws' }"></i>
+                <span style="position: relative; bottom: 5px;">Websocket</span>
             </div>
-        </td>
-        <td>{{user.name}}</td>
-        <td>{{user.username}}</td>
-        <td>{{user.enabled}}</td>
-        <td>{{user.admin}}</td>
-        <td>{{user.lastLogin}}</td>
-    </tr>
-    </tbody>
-</table>
+        </div>
+
+        <div class="btn-toolbar">
+            <button type="button" class="btn btn-default" ng-click="openAddUserModal()">Add User</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-condensed table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Enabled</th>
+                <th>Role</th>
+                <th>Last Login</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-if="!readyState">
+                <td colspan="7" class="text-center"><i class="fa fa-spinner fa-pulse"></i></td>
+            </tr>
+            <tr ng-if="readyState && users.length == 0">
+                <td colspan="7" class="text-center">
+                    There are no users
+                </td>
+            </tr>
+            <tr ng-repeat="user in users | orderBy: 'lastLogin'">
+                <td>
+                    <div class="btn-toolbar">
+                        <button type="button" class="btn btn-danger" ng-click="confirmDeleteUser(user)" title="Remove User"><i class="fa fa-trash"></i></button>
+                    </div>
+                </td>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.enabled}}</td>
+                <td>{{user.admin}}</td>
+                <td>{{user.lastLogin}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="responseTimes.loadUsers !== null">
+            <small>Results in <strong>{{responseTimes.loadUsers}}</strong> seconds</small>
+        </div>
+    </div>
+</div>
 
 <script type="text/ng-template" id="addUserModal.html">
     <div class="modal-header">
@@ -53,6 +85,13 @@
                 <div class="col-md-10">
                     <input type="text" class="form-control input-sm" ng-model="user.name.value" placeholder="The user's name / nickname">
                     <p ng-if="user.name.valid === false" class="text-danger"><small>{{user.name.message}}</small></p>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': user.email.valid === false }">
+                <label class="control-label col-md-2">Email</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control input-sm" ng-model="user.email.value" placeholder="The user's email address">
+                    <p ng-if="user.email.valid === false" class="text-danger"><small>{{user.email.message}}</small></p>
                 </div>
             </div>
             <div class="form-group" ng-class="{ 'has-error': user.username.valid === false }">
