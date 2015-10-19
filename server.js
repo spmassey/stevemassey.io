@@ -6,6 +6,10 @@
 // call the packages we need
 var server = require('http').createServer();
 var express = require('express');        // call express
+var session = require('express-session');
+var redis = require('redis');
+var RedisClient = redis.createClient();
+var RedisStore = require('connect-redis')(session);
 var app = express();                 // define our app using express
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({server: server, port: 4080});
@@ -17,13 +21,31 @@ var Q = require('q');
 var models = require('./models')(mongoose);
 var UsersApi = require('./api/users')(models.User);
 var UserApi = require('./api/user')(models.User);
+//var passport = require('./')
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
+app.use(session({
+    store: new RedisStore({
+        client: RedisClient
+    }),
+    secret: 'Winston_Churchill'
+}));
+app.use(function (req, res, next) {
+    if (!req.session) {
+        return next(new Error('No session attached to request'));
+    }
+    if (!req.session.hasOwnProperty('views')) {
+        req.session.views = 0;
+    }
+    ++req.session.views;
+    console.log('SESSION VIEWS:', req.session.views);
+    next();
+});
 app.use(express.static(__dirname + '/app'));
+
 
 var port = process.env.PORT || 8080;        // set our port
 

@@ -35,7 +35,11 @@
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
+    "connect-redis": "^3.0.1",
+    "express-session": "^1.11.3",
+    "passport-remember-me": "0.0.1",
     "q": "^1.4.1",
+    "redis": "^2.2.5",
     "ws": "^0.8.0"
   }
 }
