@@ -18,9 +18,6 @@ var path = require('path');
 var url = require('url');
 var mongoose = require('mongoose');
 var Q = require('q');
-var models = require('./models')(mongoose);
-var UsersApi = require('./api/users')(models.User);
-var UserApi = require('./api/user')(models.User);
 //var passport = require('./')
 
 // configure app to use bodyParser()
@@ -60,60 +57,7 @@ mongoose.connect(dsn + db, function (err, res) {
     }
 });
 
-// ROUTES FOR OUR API
-// =============================================================================
-var router = express.Router();              // get an instance of the express Router
-
-router.get('/', function (req, res) {
-    res.sendfile(path.join(__dirname + "/app/index.html"));
-});
-
-router.get('/users', function (req, res) {
-    UsersApi.get()
-        .then(function (users) {
-            res.send(users);
-        }, function (err) {
-            // TODO: write me
-        });
-});
-
-router.post('/user', function (req, res) {
-    var payload = req.body;
-    UserApi.add(payload)
-        .then(function (newId) {
-            res.send({
-                uid: newId
-            });
-        }, function (err) {
-            // TODO: write me
-        });
-});
-
-router.put('/user/:id', function (req, res) {
-    var payload = req.body;
-    UserApi.save(req.params.id, payload)
-        .then(function () {
-            res.send({
-                uid: req.params.id
-            });
-        }, function (err) {
-            // TODO: write me
-        });
-});
-
-router.delete('/user/:id', function (req, res) {
-    UserApi.remove(req.params.id)
-        .then(function () {
-            res.send({
-                uid: req.params.id
-            });
-        }, function (err) {
-            // TODO: write me
-        });
-});
-
-app.use(router);
-
+app.use(require('./controllers'));
 
 wss.on('connection', function connection(ws) {
     //var location = url.parse(ws.upgradeReq.url, true);
