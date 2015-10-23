@@ -1,0 +1,7 @@
+extends ./index
+
+block content
+    div(ng-cloak)
+        div(ng-view)
+
+    script(data-main='require-config', src='bower_components/requirejs/require.js')

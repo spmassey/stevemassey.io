@@ -5,7 +5,7 @@ router.use('/user', require('./user'));
 router.use('/users', require('./users'));
 
 router.get('/', function (req, res) {
-    res.sendfile(path.join(__dirname + "/app/index.html"));
+    res.render('main', { title: 'SteveMassey.io' });
 });
 
 module.exports = router;

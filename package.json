@@ -1,7 +1,7 @@
 {
   "name": "stevemassey.io",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The source for stevemassey.io",
   "repository": "https://github.com/spmassey/stevemassey.io",
   "license": "MIT",
@@ -19,7 +19,13 @@
     "shelljs": "^0.2.6",
     "express": "~4.0.0",
     "mongoose": "~3.6.13",
-    "body-parser": "~1.0.1"
+    "body-parser": "~1.0.1",
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-shell": "^1.1.2"
   },
   "scripts": {
     "postinstall": "bower install",
@@ -37,6 +43,8 @@
     "bcrypt-nodejs": "0.0.3",
     "connect-redis": "^3.0.1",
     "express-session": "^1.11.3",
+    "jade": "^1.11.0",
+    "moment": "^2.10.6",
     "passport-remember-me": "0.0.1",
     "q": "^1.4.1",
     "redis": "^2.2.5",
