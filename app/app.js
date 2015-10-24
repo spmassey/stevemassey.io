@@ -1,6 +1,7 @@
 'use strict';
 
-define([
+require([
+    'requirejs',
 	'angular',
 	'angularRoute',
 	'angularWebsocket',
@@ -15,8 +16,7 @@ define([
     'projects/projects',
     'about/about',
     'contact/contact'
-], function(angular) {
-
+], function() {
 	// Declare app level module which depends on views, and components
 	var myApp = angular.module('myApp', [
 		'ngRoute',
@@ -48,7 +48,11 @@ define([
 
     myApp.controller('HeaderCtrl', HeaderCtrl);
 
-
+    // bootstrap
+    angular.element(document).ready(function() {
+        console.log('bootstrapped!!');
+        angular.bootstrap(document, ['myApp']);
+    });
 
     return myApp;
 });

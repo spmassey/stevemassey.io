@@ -50,3 +50,10 @@ html
             p.text-muted
                 | &copy; Steve Massey #{moment().format('YYYY')}
                 | &middot; <a href="mailto:steve@stevemassey.io">steve@stevemassey.io</a>
+
+
+    if locals.dev
+        script(data-main='app', src='bower_components/requirejs/require.js')
+        script(src='require-config.js')
+    else
+        script(src='dist/bundle.js')

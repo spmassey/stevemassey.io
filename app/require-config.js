@@ -2,6 +2,7 @@
 
 require.config({
 	paths: {
+        requirejs: 'bower_components/requirejs/require',
         jquery: 'bower_components/jquery/dist/jquery.min',
         bootstrap: 'bower_components/bootstrap/dist/js/bootstrap.min',
 		angular: 'bower_components/angular/angular',
@@ -17,7 +18,10 @@ require.config({
 	},
 	shim: {
         'bootstrap': ['jquery'],
-		'angular' : {'exports' : 'angular'},
+		'angular' : {
+            'exports' : 'angular',
+            deps: ['requirejs']
+        },
 		'angularRoute': ['angular'],
 		'angularMocks': {
 			deps: ['angular'],
@@ -30,19 +34,9 @@ require.config({
         'featherlightgallery': ['featherlight']
 	},
 	priority: [
+        "requirejs",
+        "jquery",
 		"angular"
 	],
-	baseUrl: '/'
+	baseUrl: './'
 });
-
-require([
-	'angular',
-	'app'
-	], function(angular, app) {
-		var $html = angular.element(document.getElementsByTagName('html')[0]);
-		angular.element().ready(function() {
-			// bootstrap the app manually
-			angular.bootstrap(document, ['myApp']);
-		});
-	}
-);

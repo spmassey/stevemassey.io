@@ -28,6 +28,14 @@ var accessLogStream = FileStreamRotator.getStream({
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}))
 
+app.locals.moment = require('moment');
+
+// inline middleware
+app.use(function (req, res, next) {
+    res.locals.dev = (req.get('host') != 'stevemassey.io');
+    next();
+});
+
 // app config
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -43,8 +51,6 @@ app.use(session({
 app.set('views', './views');
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/app'));
-
-app.locals.moment = require('moment');
 
 // db
 var port = process.env.PORT || 8080;
