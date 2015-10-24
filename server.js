@@ -37,7 +37,7 @@ app.set('views', './views');
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/app'));
 
-var port = process.env.PORT || 80;        // set our port
+var port = process.env.PORT || 8080;        // set our port
 
 var dsn = 'mongodb://localhost/',
     db = 'SteveMasseyIo';
