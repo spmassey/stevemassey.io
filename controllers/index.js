@@ -6,7 +6,7 @@ var express = require('express'),
 router.use('/user', require('./user'));
 router.use('/users', require('./users'));
 
-router.get('/', function (req, res) {
+router.get('(/?)', function (req, res) {
     res.render('main', { title: 'SteveMassey.io' });
 });
 
