@@ -16,6 +16,8 @@ var path = require('path');
 var url = require('url');
 var mongoose = require('mongoose');
 var Q = require('q');
+var flash = require('connect-flash');
+
 //var passport = require('./')
 
 app.locals.moment = require('moment');
@@ -24,6 +26,7 @@ app.locals.moment = require('moment');
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(flash());
 app.use(session({
     store: new RedisStore({
         client: RedisClient
@@ -34,8 +37,7 @@ app.set('views', './views');
 app.set('view engine', 'jade');
 app.use(express.static(__dirname + '/app'));
 
-
-var port = process.env.PORT || 8080;        // set our port
+var port = process.env.PORT || 80;        // set our port
 
 var dsn = 'mongodb://localhost/',
     db = 'SteveMasseyIo';
@@ -56,3 +58,8 @@ server.on('request', app);
 server.listen(port, function () {
     console.log('Listening on ' + server.address().port)
 });
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/login')
+}

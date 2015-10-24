@@ -1,0 +1,53 @@
+<div class="row">
+    <div class="col-md-12">
+        <h1>Projects</h1>
+        <hr>
+    </div>
+</div>
+
+<div data-ng-repeat="project in projects | filter: notEmpty">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{project.name}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div data-ng-show="project.screenshots.length > 0">
+                <a href="myimage.jpg" data-featherlight="{{project.screenshots[0]}}">
+                    <img data-ng-src="{{project.screenshots[0]}}" class="img-responsive" style="border: 1px solid #f2f2f2;">
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p data-ng-bind-html="project.description"></p>
+            <p>
+                <strong>Tech stack:</strong>
+                <ul>
+                    <li data-ng-repeat="tech in project.stack">
+                        {{tech.name}}<br>
+                        <div class="text-muted">{{tech.description}}</div>
+                    </li>
+                </ul>
+            </p>
+            <p>
+                <strong>My Role:</strong>
+                {{project.role}}
+            </p>
+            <div data-ng-show="project.screenshots.length > 1">
+                <section data-featherlight-gallery
+                        data-featherlight-filter="a">
+                    <ul style="list-style-type: none; padding: 0; margin-top: 30px;">
+                        <li data-ng-repeat="screenshot in project.screenshots | orderBy: 'sequence'"
+                            data-ng-show="$index > 0"
+                            style="display: inline-block; margin-right: 5px; vertical-align: top;">
+                            <a data-ng-href="{{screenshot}}">
+                                <img data-ng-src="{{screenshot}}" style="max-width: 150px; border: 1px solid #f2f2f2;">
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

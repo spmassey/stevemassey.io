@@ -1,6 +1,6 @@
 html
     head
-        title!= title
+        title(data-ng-bind="title + ' | SteveMassey.io'")
         meta(charset='utf-8')
         meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
         meta(name='description', content='')
@@ -13,7 +13,7 @@ html
 
     body
 
-        nav(class=['navbar', 'navbar-default', 'navbar-fixed-top'])
+        nav(class=['navbar', 'navbar-default', 'navbar-fixed-top'], data-ng-controller='HeaderCtrl')
             div.container
                 div.navbar-header
                     button(
@@ -28,26 +28,25 @@ html
                         span.icon-bar
                         span.icon-bar
 
-                    a.navbar-brand(href='#') SteveMassey.io
+                    a.navbar-brand(href='#/about') SteveMassey.io
 
                 div#bs-example-navbar-collapse-1(class=['collapse navbar-collapse'])
                     ul(class=['nav navbar-nav'])
-                        li.active
-                            a(href='/')
-                                | Home <span class='sr-only'>(current)</span>
-                        li
+                        li(data-ng-class="{ 'active': isActive('/about') }")
+                            a(href='#/about') About me
+                        li(data-ng-class="{ 'active': isActive('/projects') }")
                             a(href='#/projects') Projects
-                        li
-                            a(href='#') Contact
+                        li(data-ng-class="{ 'active': isActive('/contact') }")
+                            a(href='#/contact') Contact
 
 
         .container
 
             block content
-            Test
 
-            footer
-                p &copy; Steve Massey #{moment().format('YYYY')}
 
-        script(src='bower_components/jquery/dist/jquery.min.js')
-        script(src='bower_components/bootstrap/dist/js/bootstrap.min.js')
+    footer.footer
+        div.container
+            p.text-muted
+                | &copy; Steve Massey #{moment().format('YYYY')}
+                | &middot; <a href="mailto:steve@stevemassey.io">steve@stevemassey.io</a>

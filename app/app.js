@@ -5,19 +5,49 @@ define([
 	'angularRoute',
 	'angularWebsocket',
 	'angularBootstrapTpls',
+    'angularSanitize',
+    'jquery',
+    'bootstrap',
+    'showdown',
+    'featherlight',
+    'featherlightgallery',
 	'components/data-service/data-service',
-	'users/users'
+    'projects/projects',
+    'about/about',
+    'contact/contact'
 ], function(angular) {
+
 	// Declare app level module which depends on views, and components
-	return angular.module('myApp', [
+	var myApp = angular.module('myApp', [
 		'ngRoute',
 		'ngWebSocket',
 		'ui.bootstrap',
+        'ngSanitize',
 		'myApp.DataService',
-		'myApp.users'
+        'myApp.projects',
+        'myApp.about',
+        'myApp.contact'
 	]).
 	config(['$routeProvider', function($routeProvider) {
-		$routeProvider.otherwise({redirectTo: '/view1'});
+		$routeProvider.otherwise({redirectTo: '/about'});
 	}]);
+
+    myApp.run(['$rootScope', function($rootScope) {
+        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+            $rootScope.title = current.$$route.title;
+        });
+    }]);
+
+    var HeaderCtrl = ['$scope', '$location', function ($scope, $location) {
+        $scope.isActive = function (viewLocation) {
+            return viewLocation === $location.path();
+        };
+    }];
+
+    myApp.controller('HeaderCtrl', HeaderCtrl);
+
+
+
+    return myApp;
 });
 
