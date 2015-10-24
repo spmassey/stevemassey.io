@@ -32,7 +32,7 @@ app.locals.moment = require('moment');
 
 // inline middleware
 app.use(function (req, res, next) {
-    res.locals.dev = (req.get('host') != 'stevemassey.io');
+    res.locals.dev = (req.get('host').indexOf('stevemassey.io') == -1);
     next();
 });
 
