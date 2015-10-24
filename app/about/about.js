@@ -7,6 +7,7 @@ define([
         '$scope',
         function ($scope) {
             $scope.technologies = [
+                'Full Stack',
                 'REST',
                 'SOAP',
                 'AJAX',
