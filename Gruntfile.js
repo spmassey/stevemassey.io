@@ -30,6 +30,11 @@ module.exports = function(grunt) {
             }
         },
         shell: {
+            updateServiceVersion: {
+                command: function (version) {
+                    return './update-version.py -v ' + version
+                }
+            },
             tagGit: {
                 command: function (version) {
                     return 'git tag -a v' + version + ' -m "' + version + '"';
@@ -48,6 +53,10 @@ module.exports = function(grunt) {
 
     var tasks = [];
 
+    if (grunt.option('update-service-version')) {
+        tasks.push('shell:updateServiceVersion:<%= pkg.version %>');
+    }
+
     if (grunt.option('requirejs')) {
         tasks.push('requirejs');
     }
@@ -57,6 +66,7 @@ module.exports = function(grunt) {
     }
 
     if (0 == tasks.length) {
+        tasks.push('shell:updateServiceVersion:<%= pkg.version %>');
         tasks.push('requirejs');
         tasks.push('shell:tagGit:<%= pkg.version %>');
     }
