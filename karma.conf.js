@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sat Oct 24 2015 17:20:37 GMT-0400 (EDT)
+// Generated on Sun Oct 25 2015 12:37:53 GMT-0400 (EDT)
 
 module.exports = function (config) {
     config.set({
@@ -15,22 +15,28 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            {pattern: 'app/about/*.js', included: false},
-            {pattern: 'app/test/*.js', included: false},
+            {pattern: 'app/bower_components/angular/angular.js', included: false},
+            {pattern: 'app/bower_components/angular-mocks/angular-mocks.js', included: false},
+            {pattern: 'app/bower_components/angular-route/angular-route.js', included: false},
+            {pattern: 'app/bower_components/angular-sanitize/angular-sanitize.min.js', included: false},
+            {pattern: 'app/bower_components/angular-websocket/angular-websocket.min.js', included: false},
+            {pattern: 'app/js/*.js', included: false},
+            {pattern: 'app/js/**/*.js', included: false},
+            {pattern: 'test/spec/*.js', included: false},
             'test-main.js',
         ],
 
 
         // list of files to exclude
         exclude: [
-            'app/require-config.js'
+            'app/js/require-config.js',
+            'app/js/boot.js'
         ],
 
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {},
-
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -48,7 +54,7 @@ module.exports = function (config) {
 
         // level of logging
         // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_ERROR,
 
 
         // enable / disable watching file and executing tests whenever any file changes

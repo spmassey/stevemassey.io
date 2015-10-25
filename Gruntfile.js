@@ -21,9 +21,9 @@ module.exports = function(grunt) {
                     },
                     preserveLicenseComments: true,
                     fileExclusionRegExp: /google/,
-                    baseUrl: "app",
-                    mainConfigFile: "app/require-config.js",
-                    name: "app",
+                    baseUrl: "app/js",
+                    mainConfigFile: "app/js/require-config.js",
+                    name: "boot",
                     out: "app/dist/bundle.js",
                     optimize: 'uglify2'
                 }
