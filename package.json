@@ -1,7 +1,7 @@
 {
   "name": "stevemassey.io",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "The source for stevemassey.io",
   "repository": "https://github.com/spmassey/stevemassey.io",
   "license": "MIT",

@@ -4,7 +4,6 @@ require(
     [
         'angular',
         'angularRoute',
-        'angularWebsocket',
         'angularBootstrapTpls',
         'angularSanitize',
         'jquery',

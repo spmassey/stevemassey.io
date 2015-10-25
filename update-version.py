@@ -24,7 +24,7 @@ def main():
     if not version:
         assert False, 'invalid version'
 
-    with open('app/js/service/version.js', 'r+') as file:
+    with open('app/js/service/version.service.js', 'r+') as file:
         content = file.read()
         content = re.sub("version:\s?\'(.+)", "version: '" + version + "'", content)
         file.seek(0)
