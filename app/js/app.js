@@ -4,7 +4,6 @@ define(['angular'], function () {
     var myApp = angular.module('myApp', [
         'ngRoute',
         'ngSanitize',
-        'ngWebSocket',
         'ui.bootstrap',
         'myApp.filters',
         'myApp.services',

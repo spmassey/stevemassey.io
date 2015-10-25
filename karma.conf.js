@@ -15,11 +15,17 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            {pattern: 'app/bower_components/jquery/dist/jquery.min.js', included: false},
+            {pattern: 'app/bower_components/bootstrap/dist/js/bootstrap.min.js', included: false},
             {pattern: 'app/bower_components/angular/angular.js', included: false},
             {pattern: 'app/bower_components/angular-mocks/angular-mocks.js', included: false},
             {pattern: 'app/bower_components/angular-route/angular-route.js', included: false},
             {pattern: 'app/bower_components/angular-sanitize/angular-sanitize.min.js', included: false},
-            {pattern: 'app/bower_components/angular-websocket/angular-websocket.min.js', included: false},
+            {pattern: 'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js', included: false},
+            {pattern: 'app/bower_components/requirejs-text/text.js', included: false},
+            {pattern: 'app/bower_components/showdown/src/showdown.js', included: false},
+            {pattern: 'app/bower_components/featherlight/release/featherlight.min.js', included: false},
+            {pattern: 'app/bower_components/featherlight/release/featherlight.gallery.min.js', included: false},
             {pattern: 'app/js/*.js', included: false},
             {pattern: 'app/js/**/*.js', included: false},
             {pattern: 'test/spec/*.js', included: false},

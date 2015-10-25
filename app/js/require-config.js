@@ -8,7 +8,6 @@ require.config({
 		angular: '../bower_components/angular/angular',
 		angularRoute: '../bower_components/angular-route/angular-route',
 		angularMocks: '../bower_components/angular-mocks/angular-mocks',
-		angularWebsocket: '../bower_components/angular-websocket/angular-websocket',
 		angularBootstrapTpls: '../bower_components/angular-bootstrap/ui-bootstrap-tpls.min',
         angularSanitize: '../bower_components/angular-sanitize/angular-sanitize.min',
 		text: '../bower_components/requirejs-text/text',
@@ -27,7 +26,6 @@ require.config({
 			deps: ['angular'],
 			exports: 'angular.mock'
 		},
-		'angularWebsocket': ['angular'],
 		'angularBootstrapTpls': ['angular'],
         'angularSanitize': ['angular'],
         'featherlight': ['jquery'],
