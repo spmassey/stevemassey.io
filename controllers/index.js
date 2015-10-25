@@ -3,8 +3,8 @@ var express = require('express'),
     flash = require('connect-flash'),
     utils = require('../utils');
 
-router.use('/user', require('./user'));
-router.use('/users', require('./users'));
+//router.use('/user', require('./user'));
+//router.use('/users', require('./users'));
 
 router.get('(/?)', function (req, res) {
     res.render('main', { title: 'SteveMassey.io' });
