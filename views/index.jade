@@ -13,7 +13,7 @@ html
 
     body
 
-        nav(class=['navbar', 'navbar-default', 'navbar-fixed-top'], data-ng-controller='HeaderCtrl')
+        nav(class=['navbar', 'navbar-default', 'navbar-fixed-top'], data-ng-controller='HeaderController')
             div.container
                 div.navbar-header
                     button(
@@ -55,7 +55,7 @@ html
 
 
     if locals.dev
-        script(data-main='app', src='bower_components/requirejs/require.js')
-        script(src='require-config.js')
+        script(data-main='boot', src='bower_components/requirejs/require.js')
+        script(src='js/require-config.js')
     else
         script(src='dist/bundle.js')
