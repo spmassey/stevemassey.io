@@ -5,19 +5,18 @@
     </div>
 </div>
 
-<div data-ng-repeat="project in projects | filter: notEmpty | orderBy: 'sequence'">
+<div data-ng-repeat="project in projects | filter: notEmpty | orderBy: 'sequence'"
+        style="margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #f2f2f2;">
     <div class="row">
         <div class="col-md-12">
             <h3>{{project.name}}</h3>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <div data-ng-show="project.screenshots.length > 0">
-                <a href="myimage.jpg" data-featherlight="{{project.screenshots[0]}}">
-                    <img data-ng-src="{{project.screenshots[0]}}" class="img-responsive" style="border: 1px solid #f2f2f2;">
-                </a>
-            </div>
+        <div class="col-md-6" data-ng-show="project.screenshots.length > 0">
+            <a href="myimage.jpg" data-featherlight="{{project.screenshots[0]}}">
+                <img data-ng-src="{{project.screenshots[0]}}" class="img-responsive" style="border: 1px solid #f2f2f2;">
+            </a>
         </div>
         <div class="col-md-6">
             <p data-ng-bind-html="project.description"></p>

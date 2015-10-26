@@ -2,7 +2,7 @@
 
 define(['app'], function (app) {
     return app.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/about', {
+        $routeProvider.when('/', {
             title: 'About',
             templateUrl: 'partials/about.html',
             controller: 'AboutController'
@@ -29,6 +29,6 @@ define(['app'], function (app) {
             templateUrl: 'partials/contact.html',
             controller: 'ContactController'
         });
-        $routeProvider.otherwise({redirectTo: '/about'});
+        $routeProvider.otherwise({redirectTo: '/'});
     }]);
 });
